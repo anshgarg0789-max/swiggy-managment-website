@@ -62,7 +62,7 @@ db.initialize().then(() => {
             console.log(`   🖥️  PC: http://localhost:${PORT}`);
             console.log(`   📱 Phone: http://${localIP}:${PORT}`);
         }
-        console.log(`\n📝 Default Admin Login: admin / admin123\n`);
+        console.log(`\n📝 Admin system ready\n`);
     });
 }).catch(err => {
     console.error('Failed to initialize database:', err);

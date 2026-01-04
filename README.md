@@ -73,7 +73,7 @@ Or follow manual steps below.
 - ✅ **Turn app ON/OFF** - Only admin can access when OFF, all others auto-logout
 - ✅ **Manage Users** - Create, edit, deactivate users
 - ✅ **Download Reports** - Export seller-wise reports as Excel
-- ✅ Default login: `admin` / `admin123`
+- ⚠️ **Admin Access** - Contact system administrator for credentials
 
 ## Security Features
 

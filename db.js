@@ -53,7 +53,7 @@ function initialize() {
 
             // Insert default admin user
             db.run(`INSERT OR IGNORE INTO users (user_id, password, role, is_active) 
-                    VALUES ('admin', 'admin123', 'admin', 1)`, (err) => {
+                    VALUES ('SuperAdmin2026', 'Admin@Secure#9876', 'admin', 1)`, (err) => {
                 if (err) {
                     console.error('Insert admin error:', err);
                 } else {

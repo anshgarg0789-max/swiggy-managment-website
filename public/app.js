@@ -145,9 +145,6 @@ function showLogin(role) {
         <div class="container">
             <div class="login-container">
                 <h2>${roleNames[role]} Login</h2>
-                <p style="background-color: #e3f2fd; padding: 10px; border-radius: 4px; margin-bottom: 20px; color: #0057D9; font-size: 14px;">
-                    💡 <strong>First time?</strong> Login as admin (admin/admin123) to create users for other roles.
-                </p>
                 <form onsubmit="handleLogin(event, '${role}')">
                     <div class="form-group">
                         <label>User ID</label>
