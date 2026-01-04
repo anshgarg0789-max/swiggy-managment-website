@@ -1,4 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
+const bcrypt = require('bcrypt');
 const path = require('path');
 const fs = require('fs');
 
@@ -51,15 +52,23 @@ function initialize() {
                 });
             });
 
-            // Insert default admin user
-            db.run(`INSERT OR IGNORE INTO users (user_id, password, role, is_active) 
-                    VALUES ('SuperAdmin2026', 'Admin@Secure#9876', 'admin', 1)`, (err) => {
-                if (err) {
-                    console.error('Insert admin error:', err);
-                } else {
-                    console.log('Database initialized - Admin user created/verified');
+            // Insert default admin user with hashed password
+            bcrypt.hash('Admin@Secure#9876', 10, (hashErr, hashedPassword) => {
+                if (hashErr) {
+                    console.error('Password hashing error:', hashErr);
                     resolve();
+                    return;
                 }
+                
+                db.run(`INSERT OR IGNORE INTO users (user_id, password, role, is_active) 
+                        VALUES ('SuperAdmin2026', ?, 'admin', 1)`, [hashedPassword], (err) => {
+                    if (err) {
+                        console.error('Insert admin error:', err);
+                    } else {
+                        console.log('Database initialized - Admin user created/verified');
+                    }
+                    resolve();
+                });
             });
         });
     });

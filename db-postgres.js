@@ -1,4 +1,5 @@
 const { Pool } = require('pg');
+const bcrypt = require('bcrypt');
 
 // PostgreSQL connection for Railway (persistent cloud storage)
 const pool = new Pool({
@@ -38,10 +39,11 @@ async function initialize() {
         // Insert default app status
         await pool.query(`INSERT INTO app_status (id, is_enabled) VALUES (1, 1) ON CONFLICT (id) DO NOTHING`);
 
-        // Insert default admin user
+        // Insert default admin user with hashed password
+        const hashedPassword = await bcrypt.hash('Admin@Secure#9876', 10);
         await pool.query(`INSERT INTO users (user_id, password, role, is_active) 
                 VALUES ($1, $2, $3, $4) ON CONFLICT (user_id) DO NOTHING`,
-            ['SuperAdmin2026', 'Admin@Secure#9876', 'admin', 1]);
+            ['SuperAdmin2026', hashedPassword, 'admin', 1]);
 
         console.log('✅ PostgreSQL Database initialized - Admin user created/verified');
         console.log('☁️ Data is stored in permanent cloud storage');

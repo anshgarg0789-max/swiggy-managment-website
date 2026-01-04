@@ -1,4 +1,6 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
+const ExcelJS = require('exceljs');
 const db = require('../db');
 const router = express.Router();
 
@@ -68,13 +70,16 @@ router.post('/user', authMiddleware, async (req, res) => {
 
         if (existing) {
             // Don't allow updating default admin's role or status
-            if (userId === 'admin' && (role !== 'admin' || !isActive)) {
+            if (userId === 'SuperAdmin2026' && (role !== 'admin' || !isActive)) {
                 return res.status(400).json({ error: 'Cannot modify default admin role or status' });
             }
             
-            const newPassword = password || existing.password;
-            if (password && password.length < 4) {
-                return res.status(400).json({ error: 'Password must be at least 4 characters' });
+            let newPassword = existing.password;
+            if (password) {
+                if (password.length < 8) {
+                    return res.status(400).json({ error: 'Password must be at least 8 characters' });
+                }
+                newPassword = await bcrypt.hash(password, 10);
             }
             
             await db.run(
@@ -82,12 +87,13 @@ router.post('/user', authMiddleware, async (req, res) => {
                 [newPassword, role, isActive ? 1 : 0, userId]
             );
         } else {
-            if (!password || password.length < 4) {
-                return res.status(400).json({ error: 'Password must be at least 4 characters' });
+            if (!password || password.length < 8) {
+                return res.status(400).json({ error: 'Password must be at least 8 characters' });
             }
+            const hashedPassword = await bcrypt.hash(password, 10);
             await db.run(
                 `INSERT INTO users (user_id, password, role, is_active) VALUES (?, ?, ?, ?)`,
-                [userId, password, role, isActive ? 1 : 0]
+                [userId, hashedPassword, role, isActive ? 1 : 0]
             );
         }
 

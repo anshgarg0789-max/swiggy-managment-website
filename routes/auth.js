@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 const db = require('../db');
 const router = express.Router();
 
@@ -25,14 +26,21 @@ router.post('/login', async (req, res) => {
 
     try {
         const user = await db.get(
-            'SELECT * FROM users WHERE user_id = ? AND password = ? AND role = ?',
-            [userId, password, role]
+            'SELECT * FROM users WHERE user_id = ? AND role = ?',
+            [userId, role]
         );
 
         console.log(`User found:`, user ? 'Yes' : 'No');
 
         if (!user) {
             console.log(`Login failed: Invalid credentials`);
+            return res.status(401).json({ error: 'Invalid credentials or role mismatch' });
+        }
+
+        // Check password with bcrypt
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            console.log(`Login failed: Wrong password`);
             return res.status(401).json({ error: 'Invalid credentials or role mismatch' });
         }
 
