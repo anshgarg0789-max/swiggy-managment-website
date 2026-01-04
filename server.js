@@ -2,7 +2,10 @@ const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
-const db = require('./db');
+
+// Use PostgreSQL on Railway (persistent storage), SQLite locally
+const db = process.env.DATABASE_URL ? require('./db-postgres') : require('./db');
+
 const authRoutes = require('./routes/auth');
 const sellerRoutes = require('./routes/seller');
 const receiverRoutes = require('./routes/receiver');
